@@ -1,0 +1,32 @@
+name: Daily Weather ETL
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # каждый день в 03:00 по UTC
+  workflow_dispatch:     # можно запустить вручную
+
+jobs:
+  run-etl:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout репозитория
+      uses: actions/checkout@v3
+
+    - name: 🐍 Установка Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: ⚙️ Установка зависимостей
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: 🔐 Загрузка переменных окружения
+      run: |
+        echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> $GITHUB_ENV
+        echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> $GITHUB_ENV
+
+    - name: 🚀 Запуск скрипта
+      run: python actions_etl_weather_current_from_open_meteo.py
