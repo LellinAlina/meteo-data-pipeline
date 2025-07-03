@@ -1,0 +1,6 @@
+pandas
+requests
+openmeteo-requests
+requests-cache
+supabase
+python-dotenv
